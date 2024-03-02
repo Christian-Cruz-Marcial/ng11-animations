@@ -1,4 +1,4 @@
-import { trigger, state, style, transition, animate, } from '@angular/animations';
+import { trigger, state, style, transition, animate, keyframes, group, } from '@angular/animations';
 import { Component } from '@angular/core';
 
 
@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   templateUrl: './app.component.html',
   animations: [
+    //animated boxes
     trigger('divState', [
       state('normal', style({
         'background-color': 'red',
@@ -16,8 +17,8 @@ import { Component } from '@angular/core';
         transform: 'translateX(100px)'
       })),
       transition('normal <=> highlighted', animate(300)),
-      // transition('highlighted <=> normal', animate(800)),
     ]),
+    //animated boxes with the option to shrink
     trigger('WildState', [
       state('normal', style({
         'background-color': 'red',
@@ -44,6 +45,7 @@ import { Component } from '@angular/core';
         animate(500)
       ])
     ]),
+    //list item enter and leave animation
     trigger('list1', [
       state('in', style({
         opacity: 1,
@@ -63,8 +65,51 @@ import { Component } from '@angular/core';
       }),)
       ]),
     ]),
+    //
+    trigger('list2', [
+      state('in', style({
+        opacity: 1,
+        transform: 'translateX(0)'
+      })),
+      transition('void => *', [
+        animate(1000, keyframes([
+          style({
+            trasnform: 'translateX(-100px)',
+            opacity: 0,
+            offset: 0
+          }),
+          style({
+            transform: 'translateX(-50px)',
+            opacity: 0.5,
+            offset: 0.3
+          }),
+          style({
+            transform: 'translateX(-20px)',
+            opacity: 1,
+            offset: 0.8
+          }),
+          style({
+            transfrom: 'translateX(0px)',
+            opacity: 1,
+            offset: 1
+          })
+        ]))
+      ]),
+      transition('* => void', [
+        group([
+          animate(300, style({
+            color: 'red'
+          })),
+          animate(800, style({
+            opacity: 0,
+            transform: 'translateX(100px)'
+          }))
+        ])
+      ])
+    ]),
   ]
 })
+
 export class AppComponent {
   state = 'normal';
   wildstate = 'normal';
@@ -84,5 +129,12 @@ onAdd(item: string) {
   }
 onDelete(item: string) {
   this.list.splice(this.list.indexOf(item), 1);
+  }
+
+  animationStarted(event: any) {
+    console.log(event);
+  }
+  animationEnded(event: any) {
+    console.log(event);
   }
 }
